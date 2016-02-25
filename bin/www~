@@ -20,23 +20,21 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
-var io = require('socket.io').listen(server);
-io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
-  });
-});
+var io = require('socket.io')(server);
 
 io.on('connection', function(socket){
- console.log('a user connected');
-  socket.broadcast.emit('chat message',"User Connected!");
-//  io.emit('chat message', "User Connected!");
- socket.on('disconnect', function(){
-  socket.broadcast.emit('chat message',"User DisConnected!");
- // io.emit('chat message', "User Disconnected!");
-   console.log('user disconnected');
- });
-});
+	  socket.on('chat message', function(msg){
+	    io.emit('chat message', msg);
+	  });
+	});
+io.on('connection', function(socket){
+	  console.log('a user connected');
+	io.emit('a user connected');
+	  socket.on('disconnect', function(){
+	    console.log('user disconnected');
+	    io.emit('user disconnected');
+	  });
+	});
 /**
  * Listen on provided port, on all network interfaces.
  */
